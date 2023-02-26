@@ -6,7 +6,10 @@ import { getTodos, addTodo, updateTodo, deleteTodo } from "./Api/API";
 
 
 const App: React.FC = () => { 
-  const [todos , setTodos] = useState<ITodo[]>([])
+  const [todos, setTodos] = useState<ITodo[] | any>([])
+    useEffect(() => {
+    fetchTodos()
+  }, [])
    const fetchTodos = (): void => {
     getTodos()
     .then(({ data: { todos } }: ITodo[] | any) => setTodos(todos))
@@ -16,17 +19,27 @@ const App: React.FC = () => {
   const handleSaveTodo = (e: React.FormEvent, formData: ITodo): void => {
     e.preventDefault()
     addTodo(formData)
-      .then(({ data: { todo } }: ITodo | any) => setTodos([...todos, todo]))
+      .then(({ data: { newtodo } }: ITodo []| any) => setTodos([...todos, newtodo]))
       .catch((err: Error) => console.log(err))
   }
   const handleUpdateTodo = ( formData: ITodo): void => {
     updateTodo(formData)
-      .then(({ data: { todo } }: ITodo | any) => setTodos([...todos, todo]))
+      .then( 
+        ({ data: { updatedTodo } }: ITodo | any) => {
+          const newTodos: ITodo[] = todos.map((t: ITodo) => {
+            return t._id === updatedTodo._id ? updatedTodo : t
+          })
+          setTodos(newTodos)
+        }
+      )
       .catch((err: Error) => console.log(err))
   }
   const handleDeleteTodo = (id: string): void => {
     deleteTodo(id)
-      .then(({ data: { message } }: ITodo | any) => setTodos([...todos, message]))
+      .then(({ data: { deletedTodo } }: ITodo | any) => {
+        const newTodos: ITodo[] = todos.filter((t: ITodo) => t._id !== deletedTodo._id)
+        setTodos(newTodos)
+      })
       .catch((err: Error) => console.log(err))
   }
  

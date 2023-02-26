@@ -1,4 +1,4 @@
-import { Response,Request, NextFunction } from "express";
+import { Response, Request, NextFunction } from "express";
 import { ITodo } from "../types/todo";
 import Todo from "../models/todoModel";
 
@@ -8,87 +8,87 @@ const getTodos = async (req: Request, res: Response): Promise<void> => {
         const todos: ITodo[] = await Todo.find();
         res.status(200).json({ todos });
     } catch (error: any) {
-    res.status(404).json({ message: error.message });
+        res.status(404).json({ message: error.message });
     }
 };
 
 const addTodo = async (req: Request, res: Response): Promise<void> => {
     try {
-        const body = req.body as Pick<ITodo, "title" | "description" | "status">
+
+        const body = req.body.todo as Pick<ITodo, "title" | "description" | "status">
         const todo: ITodo = new Todo({
-            name: body.title,
+            title: body.title,
             description: body.description,
             status: body.status
         })
-        const newTodo: ITodo = await todo.save()
-        res.json(201).json({
+
+        const newTodo: ITodo = await Todo.create(todo)
+
+
+        res.status(201).json({
             status: "succuess",
-            data : {
-                newTodo       
-            }
-           
+            newtodo: newTodo
+
         })
-    } catch (error) {
+    } catch (error: any) {
         res.status(404).json({
             status: "failed",
-            data : {
-               message: "Error Adding Todo"       
+            data: {
+                error: error.message
             }
-           
+
         })
-    
+
     }
 };
 
 const updateTodo = async (req: Request, res: Response): Promise<void> => {
     try {
-        const {params:{id} , body} =req
-      
+        const { params: { id }, body } = req
         const updatedTodo: ITodo | null = await Todo.findByIdAndUpdate(
-            { _id: id },
-            body
-        )
-        res.json(201).json({
+            id,
+            body,
+            {
+                new: true,
+                runValidators: true,
+            });
+        res.status(201).json({
             status: "succuess",
-            data : {
-                updatedTodo       
-            }
-           
+            updatedTodo
+
         })
     } catch (error) {
         res.status(404).json({
             status: "failed",
-            data : {
-               message: "Error Updating Todo"       
+            data: {
+                message: "Error Updating Todo"
             }
-           
+
         })
-    
+
     }
 };
 const deleteTodo = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = req.params.id
-      
+
         const deletedTodo: ITodo | null = await Todo.findByIdAndDelete(
-           id
+            id
         )
-        res.json(201).json({
+        res.status(201).json({
             status: "succuess",
-            data : {
-                deletedTodo       
-            }
-           
+            deletedTodo
+
         })
     } catch (error) {
         res.status(404).json({
             status: "failed",
-            data : {
-               message: "Error Updating Todo"       
+            data: {
+                message: "Error Updating Todo"
             }
-           
+
         })
-    
+
     }
 };
 

@@ -18,8 +18,8 @@ const AddTodo: React.FC<Props> = ({ saveTodo }) => {
     <form className='Form' onSubmit={(e) => saveTodo(e, formData)}>
       <div>
         <div>
-          <label htmlFor='name'>Name</label>
-          <input onChange={handleForm} type='text' id='name' />
+          <label htmlFor='title'>Name</label>
+          <input onChange={handleForm} type='text' id='title' />
         </div>
         <div>
           <label htmlFor='description'>Description</label>
