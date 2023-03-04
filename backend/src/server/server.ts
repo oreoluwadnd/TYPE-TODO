@@ -2,7 +2,7 @@ import app from "../app";
 import mongoose from 'mongoose';
 import 'dotenv/config'
 
-const port: string | number = process.env.PORT || 8080;
+const port: string | number = process.env.PORT || 5000;
 const uri: string = process.env.DATABASE || '';
 const options = { useNewUrlParser: true, useUnifiedTopology: true, dbName: 'Todo' };
 

@@ -3,7 +3,11 @@ import cor from 'cors';
 import todoRoutes from './routes/todoRoutes';
 
 const app: Express = express();
-app.use(cor());
+app.use(cor(
+    {
+        origin: '*'
+    }
+));
 app.use(express.json());
 
 
